@@ -687,6 +687,7 @@ static int createWindow(_GLFWwindow* window,
         //       correct position and size cannot be known until the monitor
         //       video mode has been set
         _glfwPlatformGetMonitorPos(wndconfig->monitor, &xpos, &ypos);
+
         fullWidth  = wndconfig->width;
         fullHeight = wndconfig->height;
     }
@@ -1029,6 +1030,46 @@ int _glfwPlatformWindowIconified(_GLFWwindow* window)
 int _glfwPlatformWindowVisible(_GLFWwindow* window)
 {
     return IsWindowVisible(window->win32.handle);
+}
+
+void _glfwPlatformSetWindowMonitor(_GLFWwindow* window, _GLFWmonitor* monitor,
+                                   int width, int height, int refreshRate)
+{
+    if (window->monitor)
+        _glfwRestoreVideoMode(window->monitor);
+
+    _glfwInputWindowMonitorChange(window, monitor);
+
+    // Update window styles
+    {
+        SetWindowLongPtr(window->win32.handle,
+                         GWL_STYLE, getWindowStyle(window));
+        SetWindowLongPtr(window->win32.handle,
+                         GWL_EXSTYLE, getWindowExStyle(window));
+    }
+
+    if (window->monitor)
+    {
+        GLFWvidmode mode;
+        int xpos, ypos;
+
+        _glfwSetVideoMode(window->monitor, &window->videoMode);
+        _glfwPlatformGetVideoMode(window->monitor, &mode);
+        _glfwPlatformGetMonitorPos(window->monitor, &xpos, &ypos);
+
+        SetWindowPos(window->win32.handle, HWND_TOPMOST,
+                     xpos, ypos, mode.width, mode.height,
+                     SWP_FRAMECHANGED);
+    }
+    else
+    {
+        int fullWidth, fullHeight;
+        getFullWindowSize(window, width, height, &fullWidth, &fullHeight);
+
+        SetWindowPos(window->win32.handle, HWND_TOPMOST,
+                     0, 0, fullWidth, fullHeight,
+                     SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED);
+    }
 }
 
 void _glfwPlatformPollEvents(void)
