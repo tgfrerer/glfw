@@ -941,6 +941,7 @@ typedef void (* GLFWscrollfun)(GLFWwindow*,double,double);
  *  @param[in] window The window that received the event.
  *  @param[in] key The [keyboard key](@ref keys) that was pressed or released.
  *  @param[in] scancode The system-specific scancode of the key.
+ 
  *  @param[in] action `GLFW_PRESS`, `GLFW_RELEASE` or `GLFW_REPEAT`.
  *  @param[in] mods Bit field describing which [modifier keys](@ref mods) were
  *  held down.
@@ -949,7 +950,7 @@ typedef void (* GLFWscrollfun)(GLFWwindow*,double,double);
  *
  *  @ingroup input
  */
-typedef void (* GLFWkeyfun)(GLFWwindow*,int,int,int,int);
+typedef void (* GLFWkeyfun)(GLFWwindow*,int,int,unsigned int,int,int);
 
 /*! @brief The function signature for Unicode character callbacks.
  *
@@ -3327,6 +3328,7 @@ GLFWAPI int glfwExtensionSupported(const char* extension);
  */
 GLFWAPI GLFWglproc glfwGetProcAddress(const char* procname);
 
+GLFWAPI long glfwKeyCode2Unicode(int keyCode);
 
 /*************************************************************************
  * Global definition cleanup
