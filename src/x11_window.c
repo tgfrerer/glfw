@@ -899,10 +899,11 @@ static void processEvent(XEvent *event)
         {
             const int key = translateKey(event->xkey.keycode);
             const int mods = translateState(event->xkey.state);
+            const int character = translateChar(&event->xkey);
             const int plain = !(mods & (GLFW_MOD_CONTROL | GLFW_MOD_ALT));
 
             if (event->xkey.keycode)
-                _glfwInputKey(window, key, event->xkey.keycode, GLFW_PRESS, mods);
+                _glfwInputKey(window, key, event->xkey.keycode,character ,GLFW_PRESS, mods);
 
             if (window->x11.ic)
             {
@@ -977,7 +978,7 @@ static void processEvent(XEvent *event)
                 }
             }
 
-            _glfwInputKey(window, key, event->xkey.keycode, GLFW_RELEASE, mods);
+            _glfwInputKey(window, key, event->xkey.keycode, character,GLFW_RELEASE, mods);
             break;
         }
 
