@@ -131,7 +131,7 @@ static void setStickyMouseButtons(_GLFWwindow* window, int enabled)
 //////                         GLFW event API                       //////
 //////////////////////////////////////////////////////////////////////////
 
-void _glfwInputKey(_GLFWwindow* window, int key, int scancode, int action, int mods)
+void _glfwInputKey(_GLFWwindow* window, int key, int scancode, unsigned int codepoint, int action, int mods)
 {
     if (key >= 0 && key <= GLFW_KEY_LAST)
     {
@@ -153,7 +153,7 @@ void _glfwInputKey(_GLFWwindow* window, int key, int scancode, int action, int m
     }
 
     if (window->callbacks.key)
-        window->callbacks.key((GLFWwindow*) window, key, scancode, action, mods);
+        window->callbacks.key((GLFWwindow*) window, key, scancode, codepoint, action, mods);
 }
 
 void _glfwInputChar(_GLFWwindow* window, unsigned int codepoint, int mods, int plain)
