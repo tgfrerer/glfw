@@ -485,11 +485,17 @@ static int translateKey(unsigned int key)
     const int key = translateKey([event keyCode]);
     const int mods = translateFlags([event modifierFlags]);
 
-    _glfwInputKey(window, key, [event keyCode], GLFW_PRESS, mods);
+   // _glfwInputKey(window, key, [event keyCode], GLFW_PRESS, mods);
 
     NSString* characters = [event characters];
     NSUInteger i, length = [characters length];
     const int plain = !(mods & GLFW_MOD_SUPER);
+   
+    if (length) {
+    _glfwInputKey(window, key, [event keyCode], [characters characterAtIndex:0], GLFW_PRESS, mods);
+    }else{
+    _glfwInputKey(window, key, [event keyCode], -1, GLFW_PRESS, mods);
+    }
 
     for (i = 0;  i < length;  i++)
     {
@@ -497,7 +503,7 @@ static int translateKey(unsigned int key)
         if ((codepoint & 0xff00) == 0xf700)
             continue;
 
-        _glfwInputChar(window, codepoint, mods, plain);
+        _glfwInputChar(window, codepoint,mods, plain);
     }
 }
 
@@ -523,14 +529,20 @@ static int translateKey(unsigned int key)
 
     window->ns.modifierFlags = modifierFlags;
 
-    _glfwInputKey(window, key, [event keyCode], action, mods);
+    _glfwInputKey(window, key, [event keyCode], -1,action, mods);
 }
 
 - (void)keyUp:(NSEvent *)event
 {
     const int key = translateKey([event keyCode]);
     const int mods = translateFlags([event modifierFlags]);
-    _glfwInputKey(window, key, [event keyCode], GLFW_RELEASE, mods);
+    NSString* characters = [event characters];
+    NSUInteger length = [characters length];
+    if(length){
+            _glfwInputKey(window, key, [event keyCode], [characters characterAtIndex:0], GLFW_RELEASE, mods);
+    }else{
+            _glfwInputKey(window, key, [event keyCode], -1, GLFW_RELEASE, mods);
+    }
 }
 
 - (void)scrollWheel:(NSEvent *)event
