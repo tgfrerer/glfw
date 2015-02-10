@@ -202,6 +202,21 @@ static int translateKey(WPARAM wParam, LPARAM lParam)
     return _glfw.win32.publicKeys[HIWORD(lParam) & 0x1FF];
 }
 
+static int translateToUnicode(WPARAM wParam, int scancode)
+{
+    	BYTE keyboardState[256];
+    	GetKeyboardState(keyboardState);
+    	wchar_t buff[2];
+    	int ret = ToUnicode(wParam,scancode,keyboardState,buff,2,0);
+    	int character;
+    	if(ret>0){
+        		character = buff[0];
+        	}else{
+            		character = -1;
+            	}
+    	return character;
+}
+
 // Enter full screen mode
 //
 static GLboolean enterFullscreenMode(_GLFWwindow* window)
@@ -307,9 +322,10 @@ static LRESULT CALLBACK windowProc(HWND hWnd, UINT uMsg,
             const int scancode = (lParam >> 16) & 0x1ff;
             const int key = translateKey(wParam, lParam);
             if (key == _GLFW_KEY_INVALID)
-                break;
+                				break;
+            			const int unicode = translateToUnicode(wParam,scancode);
 
-            _glfwInputKey(window, key, scancode, GLFW_PRESS, getKeyMods());
+                        _glfwInputKey(window, key, scancode, unicode, GLFW_PRESS, getKeyMods());
             break;
         }
 
@@ -353,17 +369,17 @@ static LRESULT CALLBACK windowProc(HWND hWnd, UINT uMsg,
             {
                 // Release both Shift keys on Shift up event, as only one event
                 // is sent even if both keys are released
-                _glfwInputKey(window, GLFW_KEY_LEFT_SHIFT, scancode, GLFW_RELEASE, mods);
-                _glfwInputKey(window, GLFW_KEY_RIGHT_SHIFT, scancode, GLFW_RELEASE, mods);
+                _glfwInputKey(window, GLFW_KEY_LEFT_SHIFT, scancode, -1,GLFW_RELEASE, mods);
+                _glfwInputKey(window, GLFW_KEY_RIGHT_SHIFT, scancode, -1,GLFW_RELEASE, mods);
             }
             else if (wParam == VK_SNAPSHOT)
             {
                 // Key down is not reported for the print screen key
-                _glfwInputKey(window, key, scancode, GLFW_PRESS, mods);
-                _glfwInputKey(window, key, scancode, GLFW_RELEASE, mods);
+                _glfwInputKey(window, key, scancode, -1,GLFW_PRESS, mods);
+                _glfwInputKey(window, key, scancode, -1,GLFW_RELEASE, mods);
             }
             else
-                _glfwInputKey(window, key, scancode, GLFW_RELEASE, mods);
+                _glfwInputKey(window, key, scancode, -1,GLFW_RELEASE, mods);
 
             break;
         }
@@ -1029,10 +1045,10 @@ void _glfwPlatformPollEvents(void)
             // See if this differs from our belief of what has happened
             // (we only have to check for lost key up events)
             if (!lshiftDown && window->keys[GLFW_KEY_LEFT_SHIFT] == 1)
-                _glfwInputKey(window, GLFW_KEY_LEFT_SHIFT, 0, GLFW_RELEASE, mods);
+                _glfwInputKey(window, GLFW_KEY_LEFT_SHIFT, 0, -1,GLFW_RELEASE, mods);
 
             if (!rshiftDown && window->keys[GLFW_KEY_RIGHT_SHIFT] == 1)
-                _glfwInputKey(window, GLFW_KEY_RIGHT_SHIFT, 0, GLFW_RELEASE, mods);
+                _glfwInputKey(window, GLFW_KEY_RIGHT_SHIFT, 0, -1,GLFW_RELEASE, mods);
         }
 
         // Did the cursor move in an focused window that has disabled the cursor
