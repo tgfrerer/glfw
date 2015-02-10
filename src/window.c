@@ -58,7 +58,7 @@ void _glfwInputWindowFocus(_GLFWwindow* window, GLboolean focused)
         for (i = 0;  i <= GLFW_KEY_LAST;  i++)
         {
             if (window->keys[i] == GLFW_PRESS)
-                _glfwInputKey(window, i, 0, GLFW_RELEASE, 0);
+                _glfwInputKey(window, i, 0, -1,GLFW_RELEASE, 0);
         }
 
         // Release all pressed mouse buttons
