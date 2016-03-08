@@ -374,9 +374,6 @@ static LRESULT CALLBACK windowProc(HWND hWnd, UINT uMsg,
             _glfwInputChar(window, (unsigned int) wParam, getKeyMods(), plain);
             return 0;
         }
-
-        case WM_KEYDOWN:
-        case WM_SYSKEYDOWN:
         case WM_KEYUP:
         case WM_SYSKEYUP:
         {
