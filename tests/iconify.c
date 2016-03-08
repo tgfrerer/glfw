@@ -28,6 +28,7 @@
 //
 //========================================================================
 
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <stdio.h>
@@ -61,11 +62,17 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
     switch (key)
     {
-        case GLFW_KEY_SPACE:
+        case GLFW_KEY_I:
             glfwIconifyWindow(window);
             break;
+        case GLFW_KEY_M:
+            glfwMaximizeWindow(window);
+            break;
+        case GLFW_KEY_R:
+            glfwRestoreWindow(window);
+            break;
         case GLFW_KEY_ESCAPE:
-            glfwSetWindowShouldClose(window, GL_TRUE);
+            glfwSetWindowShouldClose(window, GLFW_TRUE);
             break;
     }
 }
@@ -99,6 +106,9 @@ static void window_iconify_callback(GLFWwindow* window, int iconified)
 static void window_refresh_callback(GLFWwindow* window)
 {
     int width, height;
+
+    printf("%0.2f Window refresh\n", glfwGetTime());
+
     glfwGetFramebufferSize(window, &width, &height);
 
     glfwMakeContextCurrent(window);
@@ -146,13 +156,16 @@ static GLFWwindow* create_window(GLFWmonitor* monitor)
         exit(EXIT_FAILURE);
     }
 
+    glfwMakeContextCurrent(window);
+    gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+
     return window;
 }
 
 int main(int argc, char** argv)
 {
     int ch, i, window_count;
-    GLboolean auto_iconify = GL_TRUE, fullscreen = GL_FALSE, all_monitors = GL_FALSE;
+    int auto_iconify = GLFW_TRUE, fullscreen = GLFW_FALSE, all_monitors = GLFW_FALSE;
     GLFWwindow** windows;
 
     while ((ch = getopt(argc, argv, "afhn")) != -1)
@@ -160,7 +173,7 @@ int main(int argc, char** argv)
         switch (ch)
         {
             case 'a':
-                all_monitors = GL_TRUE;
+                all_monitors = GLFW_TRUE;
                 break;
 
             case 'h':
@@ -168,11 +181,11 @@ int main(int argc, char** argv)
                 exit(EXIT_SUCCESS);
 
             case 'f':
-                fullscreen = GL_TRUE;
+                fullscreen = GLFW_TRUE;
                 break;
 
             case 'n':
-                auto_iconify = GL_FALSE;
+                auto_iconify = GLFW_FALSE;
                 break;
 
             default:
@@ -233,7 +246,7 @@ int main(int argc, char** argv)
 
     for (;;)
     {
-        glfwPollEvents();
+        glfwWaitEvents();
 
         for (i = 0;  i < window_count;  i++)
         {

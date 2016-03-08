@@ -2,6 +2,53 @@
 
 @page news New features
 
+@section news_32 New features in 3.2
+
+
+@subsection news_32_sizelimits Window size limit support
+
+GLFW now supports setting both absolute and relative window size limits with
+@ref glfwSetWindowSizeLimits and @ref glfwSetWindowAspectRatio.
+
+
+@subsection news_32_keyname Localized key names
+
+GLFW now supports querying the localized name of printable keys with @ref
+glfwGetKeyName, either by key token or by scancode.
+
+
+@subsection news_32_vulkan Support for Vulkan
+
+GLFW now supports basic integration with Vulkan with @ref glfwVulkanSupported,
+@ref glfwGetRequiredInstanceExtensions, @ref glfwGetInstanceProcAddress, @ref
+glfwGetPhysicalDevicePresentationSupport and @ref glfwCreateWindowSurface.
+Vulkan header inclusion can be selected with
+[GLFW_INCLUDE_VULKAN](@ref build_macros).
+
+
+@subsection news_32_maximize Window maxmimization support
+
+GLFW now supports window maximization with @ref glfwMaximizeWindow and the
+[GLFW_MAXIMIZED](@ref window_attribs_wnd) window hint and attribute.
+
+
+@subsection news_32_focus Window input focus control
+
+GLFW now supports giving windows input focus with @ref glfwFocusWindow.
+
+
+@subsection news_32_timer Raw timer access
+
+GLFW now supports raw timer values with @ref glfwGetTimerValue and @ref
+glfwGetTimerFrequency.
+
+
+@subsection news_32_waittimeout Wait for events with timeout
+
+GLFW now supports waiting for events for a set amount of time with @ref
+glfwWaitEventsTimeout.
+
+
 @section news_31 New features in 3.1
 
 These are the release highlights.  For a full list of changes see the
@@ -72,7 +119,7 @@ and the cursor position directly instead of returning cached data.
 @subsection news_31_libovr Better interoperability with Oculus Rift
 
 GLFW now provides native access functions for the OS level handles corresponding
-to monitor objects, as well as a [brief guide](@ref rift).  It is also regularly
+to monitor objects, as well as the @ref rift_guide.  It is also regularly
 tested for compatibility with the latest version of LibOVR (0.4.4 on release).
 
 
